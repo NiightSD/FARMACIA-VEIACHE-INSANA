@@ -1,0 +1,90 @@
+{% extends "farmaciaapp/base.html" %}
+
+{% block title %}Iniciar sesión · Farmacia Veiache{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-shell">
+            <div class="row g-0">
+                <div class="col-lg-5">
+                    <aside class="auth-aside">
+                        <div class="auth-aside-top">
+                            <span class="brand-mark brand-mark-light" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
+                            <span>Farmacia Veiache</span>
+                        </div>
+                        <div class="auth-aside-copy">
+                            <span class="auth-aside-kicker">Cuidamos de ti</span>
+                            <h2>Tu bienestar comienza con un pequeño paso.</h2>
+                            <p>Accede a nuestro catálogo en línea y encuentra lo que necesitas de forma simple y segura.</p>
+                        </div>
+                        <ul class="auth-benefits">
+                            <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Inventario actualizado</li>
+                            <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Información clara y confiable</li>
+                            <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Atención cercana</li>
+                        </ul>
+                        <div class="auth-cross" aria-hidden="true"><span></span><span></span></div>
+                    </aside>
+                </div>
+
+                <div class="col-lg-7">
+                    <div class="auth-form-wrap">
+                        <span class="auth-kicker">Bienvenido de vuelta</span>
+                        <h1 class="auth-title">Inicia sesión</h1>
+                        <p class="auth-subtitle">Ingresa tus datos para acceder a tu cuenta y revisar el inventario.</p>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger auth-alert" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                <div>
+                                    {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <form method="post" class="auth-form">
+                            {% csrf_token %}
+                            {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
+
+                            <div class="mb-4">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                                {{ form.username }}
+                                {% for error in form.username.errors %}
+                                    <div class="field-error"><i class="bi bi-exclamation-circle" aria-hidden="true"></i>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="{{ form.password.id_for_label }}" class="form-label">{{ form.password.label }}</label>
+                                <div class="password-wrap">
+                                    {{ form.password }}
+                                    <button type="button" class="password-toggle" data-password-toggle
+                                            aria-label="Mostrar contraseña" aria-pressed="false">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                {% for error in form.password.errors %}
+                                    <div class="field-error"><i class="bi bi-exclamation-circle" aria-hidden="true"></i>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <button type="submit" class="btn btn-brand w-100 btn-auth-submit">
+                                Ingresar a mi cuenta <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+                            </button>
+                        </form>
+
+                        <div class="auth-switch">
+                            <span>¿Aún no tienes una cuenta?</span>
+                            <a href="{% url 'registro' %}">Regístrate aquí</a>
+                        </div>
+
+                        <a href="{% url 'inicio' %}" class="auth-back">
+                            <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver al inicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

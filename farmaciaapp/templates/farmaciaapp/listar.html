@@ -1,0 +1,211 @@
+{% extends "farmaciaapp/base.html" %}
+
+{% block title %}Inventario · Farmacia Veiache{% endblock %}
+
+{% block content %}
+<section class="page-hero">
+    <div class="container">
+        <div class="row align-items-end g-4">
+            <div class="col-lg-8">
+                <span class="page-kicker"><i class="bi bi-capsule" aria-hidden="true"></i> Inventario en línea</span>
+                <h1 class="page-title">Nuestros medicamentos</h1>
+                <p class="page-subtitle">
+                    Consulta la disponibilidad, el precio y la información de cada producto.
+                    {% if user.is_staff %}Como administrador, también puedes actualizar el catálogo.{% endif %}
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end">
+                {% if user.is_staff %}
+                    <a href="{% url 'crear_medicamento' %}" class="btn btn-brand btn-lg">
+                        <i class="bi bi-plus-lg" aria-hidden="true"></i> Nuevo medicamento
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section inventory-section">
+    <div class="container">
+        <div class="row g-3 g-xl-4 mb-4">
+            <div class="col-6 col-xl-3">
+                <div class="stat-card">
+                    <span class="stat-card-icon stat-icon-green"><i class="bi bi-box-seam" aria-hidden="true"></i></span>
+                    <div>
+                        <span class="stat-card-value">{{ total_medicamentos }}</span>
+                        <span class="stat-card-label">Medicamentos</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="stat-card">
+                    <span class="stat-card-icon stat-icon-teal"><i class="bi bi-check2-circle" aria-hidden="true"></i></span>
+                    <div>
+                        <span class="stat-card-value">{{ disponibles }}</span>
+                        <span class="stat-card-label">Con stock</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="stat-card">
+                    <span class="stat-card-icon stat-icon-amber"><i class="bi bi-prescription2" aria-hidden="true"></i></span>
+                    <div>
+                        <span class="stat-card-value">{{ con_receta }}</span>
+                        <span class="stat-card-label">Requieren receta</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-xl-3">
+                <div class="stat-card">
+                    <span class="stat-card-icon stat-icon-rose"><i class="bi bi-exclamation-circle" aria-hidden="true"></i></span>
+                    <div>
+                        <span class="stat-card-value">{{ stock_bajo }}</span>
+                        <span class="stat-card-label">Stock bajo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="inventory-panel">
+            <div class="inventory-toolbar">
+                <div>
+                    <h2 class="panel-title">Catálogo disponible</h2>
+                    <p class="panel-subtitle mb-0">
+                        {% if busqueda %}
+                            Resultados para “{{ busqueda }}”
+                        {% else %}
+                            Información actualizada de nuestros productos
+                        {% endif %}
+                    </p>
+                </div>
+                <form method="get" class="inventory-search" role="search">
+                    <label for="buscar-medicamento" class="visually-hidden">Buscar medicamento</label>
+                    <i class="bi bi-search search-icon" aria-hidden="true"></i>
+                    <input id="buscar-medicamento" type="search" name="q" value="{{ busqueda }}"
+                           class="form-control search-input" placeholder="Buscar por nombre o laboratorio...">
+                    {% if busqueda %}
+                        <a href="{% url 'listar_medicamentos' %}" class="search-clear" aria-label="Limpiar búsqueda">
+                            <i class="bi bi-x-lg" aria-hidden="true"></i>
+                        </a>
+                    {% endif %}
+                    <button type="submit" class="btn btn-search">Buscar</button>
+                </form>
+            </div>
+
+            {% if medicamentos %}
+                <div class="table-responsive">
+                    <table class="table inventory-table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th scope="col">Medicamento</th>
+                                <th scope="col">Laboratorio</th>
+                                <th scope="col">Precio</th>
+                                <th scope="col">Stock</th>
+                                <th scope="col">Receta</th>
+                                <th scope="col">Vencimiento</th>
+                                {% if user.is_staff %}
+                                    <th scope="col" class="text-end">Acciones</th>
+                                {% endif %}
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for medicamento in medicamentos %}
+                                <tr>
+                                    <td>
+                                        <div class="med-cell">
+                                            <span class="med-avatar" aria-hidden="true">
+                                                <i class="bi bi-capsule-pill"></i>
+                                            </span>
+                                            <div class="med-info">
+                                                <span class="med-name">{{ medicamento.nombre }}</span>
+                                                <span class="med-description">{{ medicamento.descripcion|truncatechars:62 }}</span>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="lab-name">{{ medicamento.laboratorio }}</span></td>
+                                    <td><span class="price-value">$ {{ medicamento.precio|floatformat:"0" }}</span></td>
+                                    <td>
+                                        {% if medicamento.stock == 0 %}
+                                            <span class="status-badge badge-out"><span class="status-dot"></span>Sin stock</span>
+                                        {% elif medicamento.stock <= 20 %}
+                                            <span class="status-badge badge-low"><span class="status-dot"></span>{{ medicamento.stock }} un.</span>
+                                        {% else %}
+                                            <span class="status-badge badge-ok"><span class="status-dot"></span>{{ medicamento.stock }} un.</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if medicamento.requiere_receta %}
+                                            <span class="status-badge badge-recipe"><i class="bi bi-file-medical" aria-hidden="true"></i> Requiere</span>
+                                        {% else %}
+                                            <span class="status-badge badge-free">Venta libre</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if medicamento.fecha_vencimiento < hoy %}
+                                            <span class="date-value text-danger">{{ medicamento.fecha_vencimiento|date:"d/m/Y" }}</span>
+                                            <span class="date-note text-danger">Vencido</span>
+                                        {% else %}
+                                            <span class="date-value">{{ medicamento.fecha_vencimiento|date:"d/m/Y" }}</span>
+                                            <span class="date-note">Fecha límite</span>
+                                        {% endif %}
+                                    </td>
+                                    {% if user.is_staff %}
+                                        <td class="text-end">
+                                            <div class="action-group d-inline-flex">
+                                                <a href="{% url 'editar_medicamento' medicamento.pk %}"
+                                                   class="action-btn action-edit" title="Editar {{ medicamento.nombre }}"
+                                                   aria-label="Editar {{ medicamento.nombre }}">
+                                                    <i class="bi bi-pencil-square" aria-hidden="true"></i>
+                                                </a>
+                                                <a href="{% url 'eliminar_medicamento' medicamento.pk %}"
+                                                   class="action-btn action-delete" title="Eliminar {{ medicamento.nombre }}"
+                                                   aria-label="Eliminar {{ medicamento.nombre }}">
+                                                    <i class="bi bi-trash3" aria-hidden="true"></i>
+                                                </a>
+                                            </div>
+                                        </td>
+                                    {% endif %}
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                <div class="inventory-footer">
+                    <span><i class="bi bi-info-circle" aria-hidden="true"></i> Los precios están expresados en pesos chilenos (CLP).</span>
+                    <span>{{ medicamentos|length }} medicamento{{ medicamentos|length|pluralize:"s" }} encontrado{{ medicamentos|length|pluralize:"s" }}</span>
+                </div>
+            {% else %}
+                <div class="empty-state">
+                    <span class="empty-icon"><i class="bi bi-capsule" aria-hidden="true"></i></span>
+                    {% if busqueda %}
+                        <h2>Sin resultados</h2>
+                        <p>No encontramos medicamentos que coincidan con “{{ busqueda }}”. Intenta con otra búsqueda.</p>
+                        <a href="{% url 'listar_medicamentos' %}" class="btn btn-outline-brand">Ver todo el inventario</a>
+                    {% else %}
+                        <h2>El inventario está vacío</h2>
+                        <p>Todavía no hay medicamentos registrados en el catálogo.</p>
+                        {% if user.is_staff %}
+                            <a href="{% url 'crear_medicamento' %}" class="btn btn-brand">
+                                <i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar el primero
+                            </a>
+                        {% endif %}
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+
+        {% if user.is_staff %}
+            <div class="staff-note">
+                <i class="bi bi-shield-lock" aria-hidden="true"></i>
+                <p class="mb-0">Vista de administración: los botones de edición y eliminación solo están disponibles para el personal autorizado.</p>
+                <a href="{% url 'admin:index' %}">Ir al panel de Django <i class="bi bi-arrow-up-right" aria-hidden="true"></i></a>
+            </div>
+        {% else %}
+            <div class="client-note">
+                <i class="bi bi-eye" aria-hidden="true"></i>
+                <p class="mb-0">Estás viendo el inventario en modo lectura. Para consultas sobre un medicamento, contacta a nuestro equipo.</p>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}

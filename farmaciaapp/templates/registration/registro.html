@@ -1,0 +1,107 @@
+{% extends "farmaciaapp/base.html" %}
+
+{% block title %}Crear cuenta · Farmacia Veiache{% endblock %}
+
+{% block content %}
+<section class="auth-section">
+    <div class="container">
+        <div class="auth-shell auth-shell-register">
+            <div class="row g-0">
+                <div class="col-lg-5 order-lg-2">
+                    <aside class="auth-aside auth-aside-register">
+                        <div class="auth-aside-top">
+                            <span class="brand-mark brand-mark-light" aria-hidden="true"><i class="bi bi-plus-lg"></i></span>
+                            <span>Farmacia Veiache</span>
+                        </div>
+                        <div class="auth-aside-copy">
+                            <span class="auth-aside-kicker">Tu salud, primero</span>
+                            <h2>Más cerca de lo que necesitas.</h2>
+                            <p>Crea tu cuenta de cliente para revisar nuestro inventario cuando quieras, de forma rápida y segura.</p>
+                        </div>
+                        <ul class="auth-benefits">
+                            <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Consulta precios y stock</li>
+                            <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Revisa si requiere receta</li>
+                            <li><i class="bi bi-check2-circle" aria-hidden="true"></i> Acceso gratuito</li>
+                        </ul>
+                        <div class="auth-cross" aria-hidden="true"><span></span><span></span></div>
+                    </aside>
+                </div>
+
+                <div class="col-lg-7 order-lg-1">
+                    <div class="auth-form-wrap auth-form-register">
+                        <span class="auth-kicker">Comienza hoy</span>
+                        <h1 class="auth-title">Crea tu cuenta</h1>
+                        <p class="auth-subtitle">Es rápido y gratuito. Solo necesitas elegir un nombre de usuario y una contraseña segura.</p>
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger auth-alert" role="alert">
+                                <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+                                <div>
+                                    {% for error in form.non_field_errors %}<div>{{ error }}</div>{% endfor %}
+                                </div>
+                            </div>
+                        {% endif %}
+
+                        <form method="post" class="auth-form">
+                            {% csrf_token %}
+
+                            <div class="mb-3">
+                                <label for="{{ form.username.id_for_label }}" class="form-label">{{ form.username.label }}</label>
+                                {{ form.username }}
+                                {% if form.username.help_text %}<div class="form-text">{{ form.username.help_text|safe }}</div>{% endif %}
+                                {% for error in form.username.errors %}
+                                    <div class="field-error"><i class="bi bi-exclamation-circle" aria-hidden="true"></i>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="{{ form.password1.id_for_label }}" class="form-label">{{ form.password1.label }}</label>
+                                <div class="password-wrap">
+                                    {{ form.password1 }}
+                                    <button type="button" class="password-toggle" data-password-toggle
+                                            aria-label="Mostrar contraseña" aria-pressed="false">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                {% if form.password1.help_text %}
+                                    <div class="form-text password-help">{{ form.password1.help_text|safe }}</div>
+                                {% endif %}
+                                {% for error in form.password1.errors %}
+                                    <div class="field-error"><i class="bi bi-exclamation-circle" aria-hidden="true"></i>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="mb-4">
+                                <label for="{{ form.password2.id_for_label }}" class="form-label">{{ form.password2.label }}</label>
+                                <div class="password-wrap">
+                                    {{ form.password2 }}
+                                    <button type="button" class="password-toggle" data-password-toggle
+                                            aria-label="Mostrar contraseña" aria-pressed="false">
+                                        <i class="bi bi-eye" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                                {% for error in form.password2.errors %}
+                                    <div class="field-error"><i class="bi bi-exclamation-circle" aria-hidden="true"></i>{{ error }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <button type="submit" class="btn btn-brand w-100 btn-auth-submit">
+                                Crear mi cuenta <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+                            </button>
+                        </form>
+
+                        <div class="auth-switch">
+                            <span>¿Ya tienes una cuenta?</span>
+                            <a href="{% url 'login' %}">Inicia sesión</a>
+                        </div>
+
+                        <a href="{% url 'inicio' %}" class="auth-back">
+                            <i class="bi bi-arrow-left" aria-hidden="true"></i> Volver al inicio
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,239 @@
+{% extends "farmaciaapp/base.html" %}
+
+{% block title %}Farmacia Veiache · Cuidamos tu salud{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <div class="hero-pattern" aria-hidden="true"></div>
+    <div class="container position-relative">
+        <div class="row align-items-center gy-5">
+            <div class="col-lg-6">
+                <span class="eyebrow">
+                    <span class="eyebrow-dot" aria-hidden="true"></span>
+                    Tu farmacia de confianza
+                </span>
+                <h1 class="hero-title">
+                    Bienestar para ti,<br>
+                    <span class="text-brand">todos los días.</span>
+                </h1>
+                <p class="hero-lead">
+                    En Farmacia Veiache encontrarás medicamentos de calidad, orientación
+                    profesional y una atención cercana para cuidar lo más importante: tu salud.
+                </p>
+                <div class="hero-actions">
+                    {% if user.is_authenticated %}
+                        <a href="{% url 'listar_medicamentos' %}" class="btn btn-brand btn-lg">
+                            Ver inventario <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+                        </a>
+                        {% if user.is_staff %}
+                            <a href="{% url 'crear_medicamento' %}" class="btn btn-outline-brand btn-lg">
+                                <i class="bi bi-plus-lg" aria-hidden="true"></i> Agregar medicamento
+                            </a>
+                        {% endif %}
+                    {% else %}
+                        <a href="{% url 'registro' %}" class="btn btn-brand btn-lg">
+                            Crear mi cuenta <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+                        </a>
+                        <a href="{% url 'login' %}" class="btn btn-outline-brand btn-lg">Iniciar sesión</a>
+                    {% endif %}
+                </div>
+                <div class="hero-trust">
+                    <div class="trust-item">
+                        <span class="trust-icon"><i class="bi bi-shield-check" aria-hidden="true"></i></span>
+                        <span>Productos certificados</span>
+                    </div>
+                    <div class="trust-item">
+                        <span class="trust-icon"><i class="bi bi-heart-pulse" aria-hidden="true"></i></span>
+                        <span>Atención personalizada</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="hero-visual" aria-hidden="true">
+                    <div class="visual-glow visual-glow-one"></div>
+                    <div class="visual-glow visual-glow-two"></div>
+
+                    <div class="visual-main">
+                        <div class="visual-topline">
+                            <span>Farmacia Veiache</span>
+                            <span class="visual-top-icon"><i class="bi bi-capsule"></i></span>
+                        </div>
+                        <div class="medical-cross">
+                            <span class="cross-vertical"></span>
+                            <span class="cross-horizontal"></span>
+                        </div>
+                        <p class="visual-quote">
+                            Tu bienestar,<br><span>en buenas manos.</span>
+                        </p>
+                        <div class="visual-dots">
+                            <span></span><span></span><span></span>
+                        </div>
+                    </div>
+
+                    <div class="floating-card floating-card-top">
+                        <span class="floating-icon"><i class="bi bi-prescription2"></i></span>
+                        <span class="floating-copy">
+                            <strong>Recetas</strong>
+                            <small>Asesoría experta</small>
+                        </span>
+                    </div>
+
+                    <div class="floating-card floating-card-bottom">
+                        <span class="floating-icon floating-icon-light"><i class="bi bi-heart-pulse"></i></span>
+                        <span class="floating-copy">
+                            <strong>Atención cercana</strong>
+                            <small>Siempre para ti</small>
+                        </span>
+                    </div>
+
+                    <div class="floating-badge">
+                        <i class="bi bi-check2-circle"></i> Calidad garantizada
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-stats">
+            <div class="hero-stat">
+                <span class="stat-number">{{ total_medicamentos }}</span>
+                <span class="stat-label">Medicamentos en catálogo</span>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number">{{ medicamentos_disponibles }}</span>
+                <span class="stat-label">Disponibles hoy</span>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number">100<span class="stat-symbol">%</span></span>
+                <span class="stat-label">Atención responsable</span>
+            </div>
+            <div class="hero-stat">
+                <span class="stat-number stat-number-sm">Lun<span class="stat-symbol">·</span>Sáb</span>
+                <span class="stat-label">Atención farmacéutica</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row align-items-end gy-3 mb-5">
+            <div class="col-lg-7">
+                <span class="section-eyebrow">Nuestro compromiso</span>
+                <h2 class="section-title">Todo lo que necesitas para<br class="d-none d-md-block"> cuidar de ti</h2>
+            </div>
+            <div class="col-lg-5">
+                <p class="section-intro mb-0">
+                    Más que una farmacia, somos un espacio pensado para acompañarte
+                    con información clara y un trato humano.
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <article class="service-card h-100">
+                    <span class="service-icon"><i class="bi bi-chat-square-heart" aria-hidden="true"></i></span>
+                    <span class="service-number">01</span>
+                    <h3>Asesoría farmacéutica</h3>
+                    <p>
+                        Resolvemos tus dudas sobre medicamentos, indicaciones y cuidados
+                        para que tomes decisiones informadas.
+                    </p>
+                    <span class="service-link">Orientación profesional <i class="bi bi-arrow-right" aria-hidden="true"></i></span>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="service-card h-100">
+                    <span class="service-icon"><i class="bi bi-shield-check" aria-hidden="true"></i></span>
+                    <span class="service-number">02</span>
+                    <h3>Medicamentos de calidad</h3>
+                    <p>
+                        Trabajamos con productos certificados y un inventario actualizado
+                        para cuidar tu salud con confianza.
+                    </p>
+                    <span class="service-link">Calidad garantizada <i class="bi bi-arrow-right" aria-hidden="true"></i></span>
+                </article>
+            </div>
+            <div class="col-md-4">
+                <article class="service-card h-100">
+                    <span class="service-icon"><i class="bi bi-people" aria-hidden="true"></i></span>
+                    <span class="service-number">03</span>
+                    <h3>Atención cercana</h3>
+                    <p>
+                        Escuchamos tus necesidades y te acompañamos con un servicio
+                        amable, oportuno y cercano.
+                    </p>
+                    <span class="service-link">Siempre a tu lado <i class="bi bi-arrow-right" aria-hidden="true"></i></span>
+                </article>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="care-panel">
+            <div class="row g-5 align-items-center">
+                <div class="col-lg-6">
+                    <span class="section-eyebrow section-eyebrow-light">Una farmacia que te escucha</span>
+                    <h2 class="section-title text-white">Tu salud merece<br>una atención sin prisas.</h2>
+                    <p class="care-intro">
+                        Sabemos que cada persona es distinta. Por eso te entregamos
+                        información clara y un acompañamiento cercano en cada visita.
+                    </p>
+                    <a href="{% if user.is_authenticated %}{% url 'listar_medicamentos' %}{% else %}{% url 'registro' %}{% endif %}"
+                       class="btn btn-light btn-lg mt-2">
+                        {% if user.is_authenticated %}Explorar inventario{% else %}Comenzar ahora{% endif %}
+                        <i class="bi bi-arrow-right-short" aria-hidden="true"></i>
+                    </a>
+                </div>
+                <div class="col-lg-6">
+                    <div class="care-list">
+                        <div class="care-item">
+                            <span class="care-item-icon"><i class="bi bi-clipboard2-pulse" aria-hidden="true"></i></span>
+                            <div>
+                                <h3>Información clara</h3>
+                                <p>Conoce si un medicamento requiere receta y revisa su disponibilidad.</p>
+                            </div>
+                        </div>
+                        <div class="care-item">
+                            <span class="care-item-icon"><i class="bi bi-person-heart" aria-hidden="true"></i></span>
+                            <div>
+                                <h3>Acompañamiento real</h3>
+                                <p>Un equipo disponible para responder tus preguntas y orientarte.</p>
+                            </div>
+                        </div>
+                        <div class="care-item">
+                            <span class="care-item-icon"><i class="bi bi-calendar2-check" aria-hidden="true"></i></span>
+                            <div>
+                                <h3>Fechas bajo control</h3>
+                                <p>Mantenemos un registro responsable de cada medicamento.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section pt-0">
+    <div class="container">
+        <div class="cta-strip">
+            <div class="cta-icon" aria-hidden="true"><i class="bi bi-plus-lg"></i></div>
+            <div class="cta-copy">
+                <h2>Estamos aquí para cuidarte.</h2>
+                <p>{% if user.is_authenticated %}Revisa el catálogo completo desde tu cuenta.{% else %}Crea tu cuenta y accede a nuestro inventario en línea.{% endif %}</p>
+            </div>
+            <div class="cta-action">
+                {% if user.is_authenticated %}
+                    <a href="{% url 'listar_medicamentos' %}" class="btn btn-brand">Ir al inventario</a>
+                {% else %}
+                    <a href="{% url 'registro' %}" class="btn btn-brand">Registrarme gratis</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
