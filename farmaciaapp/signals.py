@@ -10,6 +10,5 @@ from rest_framework.authtoken.models import Token
     dispatch_uid="farmaciaapp.crear_token_usuario",
 )
 def crear_token_usuario(sender, instance, created, raw=False, **kwargs):
-    """Crea un token de API automáticamente al registrar un usuario nuevo."""
     if created and not raw:
         Token.objects.get_or_create(user=instance)

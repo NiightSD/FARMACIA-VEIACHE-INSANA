@@ -2,7 +2,6 @@ from django.db import models
 
 
 class Medicamento(models.Model):
-    """Medicamento disponible en el inventario de la farmacia."""
 
     nombre = models.CharField("nombre", max_length=120)
     laboratorio = models.CharField("laboratorio", max_length=100)

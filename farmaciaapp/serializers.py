@@ -5,7 +5,6 @@ from .models import Medicamento
 
 
 def _limites_fecha_vencimiento():
-    """Entrega la fecha de hoy y el límite de diez años en el futuro."""
     hoy = timezone.localdate()
     try:
         limite = hoy.replace(year=hoy.year + 10)
@@ -15,7 +14,6 @@ def _limites_fecha_vencimiento():
 
 
 class MedicamentoSerializer(serializers.ModelSerializer):
-    """Representación JSON de un medicamento y sus reglas de negocio."""
 
     class Meta:
         model = Medicamento

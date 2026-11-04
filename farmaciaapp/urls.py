@@ -16,7 +16,6 @@ urlpatterns = [
         auth_views.LogoutView.as_view(next_page="inicio"),
         name="logout",
     ),
-    # Inventario web.
     path(
         "inventario/",
         views.listar_medicamentos,
@@ -37,7 +36,6 @@ urlpatterns = [
         views.eliminar_medicamento,
         name="eliminar_medicamento",
     ),
-    # API REST.
     path(
         "api/medicamentos/",
         views.medicamentos_api,

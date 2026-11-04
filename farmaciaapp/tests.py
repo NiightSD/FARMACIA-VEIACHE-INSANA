@@ -15,7 +15,6 @@ from .serializers import MedicamentoSerializer
 
 
 def datos_medicamento(**cambios):
-    """Datos válidos reutilizables para pruebas de formularios y API."""
     datos = {
         "nombre": "Paracetamol 500 mg",
         "laboratorio": "Laboratorio Chile",

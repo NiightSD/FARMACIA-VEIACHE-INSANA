@@ -7,18 +7,15 @@ from .models import Medicamento
 
 
 def _limites_fecha_vencimiento():
-    """Entrega la fecha de hoy y el límite de diez años en el futuro."""
     hoy = timezone.localdate()
     try:
         limite = hoy.replace(year=hoy.year + 10)
     except ValueError:
-        # Si hoy es 29 de febrero, el límite se fija el 28 de febrero.
         limite = hoy.replace(year=hoy.year + 10, day=28)
     return hoy, limite
 
 
 class MedicamentoForm(forms.ModelForm):
-    """Formulario web para crear y editar medicamentos."""
 
     class Meta:
         model = Medicamento
@@ -141,7 +138,6 @@ class MedicamentoForm(forms.ModelForm):
 
 
 class RegistroForm(UserCreationForm):
-    """Formulario de registro para clientes de la farmacia."""
 
     class Meta(UserCreationForm.Meta):
         model = User
@@ -177,7 +173,6 @@ class RegistroForm(UserCreationForm):
 
 
 class LoginForm(AuthenticationForm):
-    """Formulario de inicio de sesión con estilos Bootstrap."""
 
     username = forms.CharField(
         label="Nombre de usuario",

@@ -7,5 +7,4 @@ class FarmaciaappConfig(AppConfig):
     verbose_name = "Farmacia"
 
     def ready(self):
-        # Registra la creación automática de tokens para usuarios nuevos.
         from . import signals  # noqa: F401

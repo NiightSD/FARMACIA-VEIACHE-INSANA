@@ -22,25 +22,21 @@ from .serializers import MedicamentoSerializer
 
 
 def es_administrador(user):
-    """Permite el acceso a usuarios staff o superusuarios autenticados."""
     return user.is_authenticated and (user.is_staff or user.is_superuser)
 
 
 class IniciarSesionView(LoginView):
-    """Inicio de sesión que evita bucles con la página de login."""
 
     template_name = "registration/login.html"
     authentication_form = LoginForm
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
-            # Un usuario ya autenticado no debe volver al formulario de acceso.
             return redirect("inicio")
         return super().dispatch(request, *args, **kwargs)
 
 
 def inicio(request):
-    """Página pública de bienvenida de la farmacia."""
     total_medicamentos = Medicamento.objects.count()
     medicamentos_disponibles = Medicamento.objects.filter(stock__gt=0).count()
 
@@ -52,7 +48,6 @@ def inicio(request):
 
 
 def registro(request):
-    """Registra a un nuevo cliente con un perfil sin privilegios."""
     if request.user.is_authenticated:
         return redirect("inicio")
 
@@ -60,7 +55,6 @@ def registro(request):
         form = RegistroForm(request.POST)
         if form.is_valid():
             usuario = form.save(commit=False)
-            # Los clientes nunca se crean con permisos administrativos.
             usuario.is_staff = False
             usuario.is_superuser = False
             usuario.save()
@@ -78,7 +72,6 @@ def registro(request):
 
 @login_required
 def listar_medicamentos(request):
-    """Muestra el inventario a los clientes autenticados."""
     busqueda = request.GET.get("q", "").strip()
     medicamentos = Medicamento.objects.all()
 
@@ -103,7 +96,6 @@ def listar_medicamentos(request):
 
 @user_passes_test(es_administrador, login_url="login")
 def crear_medicamento(request):
-    """Permite al personal incorporar un medicamento al inventario."""
     if request.method == "POST":
         form = MedicamentoForm(request.POST)
         if form.is_valid():
@@ -125,7 +117,6 @@ def crear_medicamento(request):
 
 @user_passes_test(es_administrador, login_url="login")
 def editar_medicamento(request, pk):
-    """Permite al personal actualizar los datos de un medicamento."""
     medicamento = get_object_or_404(Medicamento, pk=pk)
 
     if request.method == "POST":
@@ -153,7 +144,6 @@ def editar_medicamento(request, pk):
 
 @user_passes_test(es_administrador, login_url="login")
 def eliminar_medicamento(request, pk):
-    """Solicita confirmación y elimina un medicamento del inventario."""
     medicamento = get_object_or_404(Medicamento, pk=pk)
 
     if request.method == "POST":
@@ -175,7 +165,6 @@ def eliminar_medicamento(request, pk):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def medicamentos_api(request):
-    """GET: lista los medicamentos. POST: crea uno nuevo."""
     if request.method == "GET":
         medicamentos = Medicamento.objects.all()
         serializer = MedicamentoSerializer(medicamentos, many=True)
@@ -192,7 +181,6 @@ def medicamentos_api(request):
 @authentication_classes([TokenAuthentication])
 @permission_classes([IsAuthenticated])
 def medicamento_api_detalle(request, pk):
-    """GET, PUT y DELETE de un medicamento específico."""
     medicamento = get_object_or_404(Medicamento, pk=pk)
 
     if request.method == "GET":
@@ -210,5 +198,4 @@ def medicamento_api_detalle(request, pk):
     return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-# Vista de DRF que entrega el token a cambio de usuario y contraseña.
 obtener_token = obtain_auth_token
